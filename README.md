@@ -11,3 +11,14 @@ Access Link or Summary:
 Public Data: Provide a direct hyperlink to the data source.
 Private Data: Provide a detailed summary of how the data will be collected or retrieved. 
 Variables & Data Types: List the key variables (at least 5-8) and their types (i.e., nominal, ordinal, logical, discrete, or continuous).
+
+  [**a) Bayesian Analysis of Tree Distributions Across Space and Time in Eastern North America 2010-2011**](https://search.dataone.org/view/https%3A%2F%2Fpasta.lternet.edu%2Fpackage%2Fmetadata%2Feml%2Fknb-lter-hfr%2F182%2F13)
+  The dataset covers tree distribution across plots in Eastern North America, alongside environmental data points. The data was collected by Sydne Record and Aaron Ellison of Harvard Forest. The data set was published via Environmental Data Initiative. 
+  Key variables:
+    - longitude of plot (interval)
+    - latitude of plot (interval)
+    - presence of fagus grandifolia (nominal)
+    - presence of hemlock (nominal)
+    - annual mean temp (continuous)
+    - annual mean precipitation (continuous)
+    - mean diurnal range (continuous)

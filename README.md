@@ -6,7 +6,7 @@ The topic we hope to investigate is how do trees respond to changes in climate. 
 
 Our research aims to determine which native species are more resilient to changes in temperature, and thus will fare better in future years as temperatures continue to fluctuate. This will then inform the reforestation efforts of conservationists, who will have the information to create more resilient forests. 
 
-
+Further, our research will analyze historical climate trends as well as tree growth patterns and the interaction between the two. By combining a historical analysis with future predictions, we will form a more comprehensive understanding of North American tree species and their dependence on environmental factors that are currently being impacted by climate change.
 
 ## 2. Dataset Exploration (Three Options)
 

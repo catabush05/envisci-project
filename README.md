@@ -1,16 +1,10 @@
 # Environmental Data Science (Spring 2026) Main Project
 Contributors: Pen Hanks, Maddie Strate, Catalina Bush
 
-1. Environmental Problem & Framing (~150 words)
+## 1. Environmental Problem & Framing (~150 words)
 Describe the environmental problem or topic. How is the problem framed to different stakeholders/rightsholders?
 
-2. Dataset Exploration (Three Options)
-For each of the three potential datasets, provide the following:
-Dataset Name & Source: Where do these data come from?
-Access Link or Summary:
-Public Data: Provide a direct hyperlink to the data source.
-Private Data: Provide a detailed summary of how the data will be collected or retrieved. 
-Variables & Data Types: List the key variables (at least 5-8) and their types (i.e., nominal, ordinal, logical, discrete, or continuous).
+## 2. Dataset Exploration (Three Options)
 
   [**a) Bayesian Analysis of Tree Distributions Across Space and Time in Eastern North America 2010-2011**](https://search.dataone.org/view/https%3A%2F%2Fpasta.lternet.edu%2Fpackage%2Fmetadata%2Feml%2Fknb-lter-hfr%2F182%2F13) <br>
     The dataset covers tree distribution across plots in Eastern North America, alongside environmental data points. The data was collected by Sydne Record and Aaron Ellison of Harvard Forest. The data set was published via Environmental Data Initiative. <br>

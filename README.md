@@ -32,7 +32,7 @@ Further, our research will analyze historical climate trends as well as tree gro
   - presence of individual species (logical)
   - ecoregion type (nominal)
 
-  [**b) Effects of Warming on Tree Species Recruitment at Harvard Forest and Duke Forest since 2009**](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-hfr.199.15) <br>
+  [**c) Effects of Warming on Tree Species Recruitment at Harvard Forest and Duke Forest since 2009**](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-hfr.199.15) <br>
     The dataset includes data from controlled experiments at Harvard Forest and Duke Forest from 2009-2012. Researchers planted a variety of local tree species and exposed them to differing air temperature, soil temperature, and light exposure conditions, then took various observations over the observational period. The data was published by Harvard University. <br>
   Key variables:
   - warming treatment (ordinal)

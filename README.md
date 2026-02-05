@@ -2,9 +2,10 @@
 Contributors: Pen Hanks, Maddie Strate, Catalina Bush
 
 ## 1. Environmental Problem & Framing (~150 words)
-The topic we hope to investigate is how do trees respond to changes in climate. Forests make up a significant part of the United States, and communities across America have aided in reforestation efforts. 
+The topic we hope to investigate is how do trees respond to changes in climate. Forests make up a significant part of the United States, and communities across America have aided in reforestation efforts. As weather in the United States has gotten more extreme over recent years, vegetation has responded in different ways to varying amounts of precipitation and sunlight. 
 
 Our research aims to determine which native species are more resilient to changes in temperature, and thus will fare better in future years as temperatures continue to fluctuate. This will then inform the reforestation efforts of conservationists, who will have the information to create more resilient forests. 
+
 
 
 ## 2. Dataset Exploration (Three Options)

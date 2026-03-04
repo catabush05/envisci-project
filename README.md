@@ -22,7 +22,7 @@ Further, our research will analyze historical climate trends as well as tree gro
   - mean diurnal range (continuous)
 
   [**b) A gridded database of the modern distributions of climate, woody plant taxa, and ecoregions for the continental United States and Canada**](https://www.sciencebase.gov/catalog/item/620da87bd34e6c7e83ba9ba7) <br>
-    The dataset covers population data for a host of woody plant species in USA and Canada. The data is broken up into a 25km grid that also contains granular environmental data points. The data was published by the US Geological Survey. <br>
+    The dataset covers population data for a host of woody plant species in USA and Canada. The data is broken up into a 25km grid that also contains granular environmental data points. The data was published by the US Geological Survey. [Link to metadata](https://portal.edirepository.org/nis/metadataviewer?packageid=knb-lter-hfr.199.15) <br>
   Key variables:
   - longitude of plot (interval)
   - latitude of plot (interval)

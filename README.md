@@ -22,7 +22,7 @@ Further, our research will analyze historical climate trends as well as tree gro
   - mean diurnal range (continuous)
 
   [**b) A gridded database of the modern distributions of climate, woody plant taxa, and ecoregions for the continental United States and Canada**](https://www.sciencebase.gov/catalog/item/620da87bd34e6c7e83ba9ba7) <br>
-    The dataset covers population data for a host of woody plant species in USA and Canada. The data is broken up into a 25km grid that also contains granular environmental data points. The data was published by the US Geological Survey. [Link to metadata](https://portal.edirepository.org/nis/metadataviewer?packageid=knb-lter-hfr.199.15) <br>
+    The dataset covers population data for a host of woody plant species in USA and Canada. The data is broken up into a 25km grid that also contains granular environmental data points. The data was published by the US Geological Survey. <br>
   Key variables:
   - longitude of plot (interval)
   - latitude of plot (interval)
@@ -33,7 +33,7 @@ Further, our research will analyze historical climate trends as well as tree gro
   - ecoregion type (nominal)
 
   [**c) Effects of Warming on Tree Species Recruitment at Harvard Forest and Duke Forest since 2009**](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-hfr.199.15) <br>
-    The dataset includes data from controlled experiments at Harvard Forest and Duke Forest from 2009-2012. Researchers planted a variety of local tree species and exposed them to differing air temperature, soil temperature, and light exposure conditions, then took various observations over the observational period. The data was published by Harvard University. <br>
+    The dataset includes data from controlled experiments at Harvard Forest and Duke Forest from 2009-2012. Researchers planted a variety of local tree species and exposed them to differing air temperature, soil temperature, and light exposure conditions, then took various observations over the observational period. The data was published by Harvard University. [Link to metadata](https://portal.edirepository.org/nis/metadataviewer?packageid=knb-lter-hfr.199.15) <br>
   Key variables:
   - warming treatment (ordinal)
   - light treatment (nominal)

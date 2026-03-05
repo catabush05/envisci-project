@@ -1,12 +1,12 @@
 library(tidyverse)
 
 data <- read_csv("hf182-01-trees-current-env.csv")
-data$prop <- data$fagus / data$count
-
+data$prop_beech <- data$fagus / data$count
+data$prop_hemlock <- data$tsuga / data$count
 
 ## Density of proportion metric
 
-ggplot(data = data, aes(x = prop)) +
+ggplot(data = data, aes(x = prop_beech)) +
   geom_density(color="blue", fill = "blue", alpha = 0.5) +
   labs(
     y = "Density", 

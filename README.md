@@ -1,5 +1,11 @@
-# Environmental Data Science (Spring 2026) Main Project
+# Rising Temperatures and Native Tree Resilience in New England
 Contributors: Pen Hanks, Maddie Strate, Catalina Bush
+
+##Abstract (100 words max)
+New England has some of the fastest rising temperatures in the world, and native tree populations are suffering because of it. This project investigates how temperature and other climatic variables impact tree presence across New England as well as tree mortality in Harvard Forest. We use a combination of predictive models (zero-inflated negative binomial, random forest, etc.) and causal analysis to measure tree resilience and habitat preference by species and location. These findings will help inform future reforestation and conservation efforts amid a warming climate. 
+
+*[Link to doc](https://docs.google.com/document/d/1HPyhOY6H4XNVYDQWtP7dnryCGXT4inpNgN0Ev869b8k/edit?usp=sharing)*
+
 
 ## 1. Environmental Problem & Framing (~150 words)
 The topic we hope to investigate is how trees respond to changes in climate. Forests make up a significant part of the United States, and communities across America have aided in reforestation efforts. As weather in the United States has gotten more extreme over recent years, vegetation has responded in different ways to varying amounts of precipitation and sunlight. 

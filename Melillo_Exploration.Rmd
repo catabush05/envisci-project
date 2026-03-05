@@ -13,7 +13,9 @@ plantID = read.csv("~/Downloads/EnvDS Project/Data/Melillo/hf199-02-hf-plant-ID.
 growth = read.csv("~/Downloads/EnvDS Project/Data/Melillo/hf199-03-hf-growth.csv")
 ```
 
-Tidying data (descriptive variable names, coercing data types, etc)
+# Tidying data
+(descriptive variable names, coercing data types, etc)
+
 ```{r}
 env = env %>% 
   rename(c(light_treat = treatment, 
@@ -26,14 +28,15 @@ env = env %>%
   mutate(date = as.Date(paste(year, month, day, sep = "-")),
         chamber = as.factor(chamber),
         light_treat = as.factor(light_treat),
-        warm_treat = as.factor(warm_treat))
+        warm_treat = ordered(warm_treat, levels = c('C', 'A', '3', '5')))
 
 plantID = plantID %>% 
   mutate(light_treat = as.factor(str_split_i(Chamber, "", -5)), 
          num_cham = as.factor(
            paste(str_split_i(Chamber, "", -4), 
                  str_split_i(Chamber, "", -3), sep = "")),
-         warm_treat = as.factor(str_split_i(Chamber, "", -1)),
+         warm_treat = ordered(as.factor(str_split_i(Chamber, "", -1)), 
+                              levels = c('C', 'A', '3', '5')),
          Site = as.factor(Site),
          Species = as.factor(Species),
          Chamber = as.factor(Chamber),
@@ -43,7 +46,9 @@ plantID = plantID %>%
          DatePlanted = as.Date(DatePlanted),
          DeathDate = as.Date(DeathDate),
          CensorDate = as.Date(CensorDate),
-         MIA = as.Date(MIA))
+         MIA = as.Date(MIA)
+  )
+        
 
 growth = growth %>% 
   mutate(Date = as.Date(Date),
@@ -54,9 +59,78 @@ growth = growth %>%
          num_cham = as.factor(
            paste(str_split_i(Chamber, "", -4), 
                  str_split_i(Chamber, "", -3), sep = "")),
-         warm_treat = as.factor(str_split_i(Chamber, "", -1)),
+         warm_treat = ordered(as.factor(str_split_i(Chamber, "", -1)), 
+                              levels = c('C', 'A', '3', '5')),
          SpringPhen = as.factor(SpringPhen),
          FallPhen = as.factor(FallPhen), 
          WaterStress = as.ordered(WaterStress))
 ```
+
+
+# Exploratory Visualizations
+Let's make some fuckin CHARTS
+
+### Height vs. Temp
+```{r}
+# Avg height of each plant species per warmth treatment
+growth %>% 
+  group_by(Species, warm_treat) %>% 
+  summarize(meanHt = mean(Height, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanHt, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Tree Height Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Height (cm)") +
+    scale_y_continuous(breaks = c(0, 45, 90)) +
+    facet_wrap(vars(Species)) +
+    theme_bw()
+```
+
+### Lifespan vs. Temp
+```{r}
+# Avg lifespan of each species per warming treatment
+plantID = plantID %>% 
+  mutate(Lifespan = DeathDate - DatePlanted)
+
+plantID %>% 
+  group_by(Species, warm_treat) %>% 
+  summarize(meanLife = mean(Lifespan, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanLife, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Tree Lifespan Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Lifespan (Days)") +
+    scale_y_continuous(breaks = c(0, 400, 800)) +
+    facet_wrap(vars(Species)) +
+    theme_bw()
+```
+
+### Water Stress vs. Temp
+```{r}
+env = env %>% 
+  rename(num_cham = chamber, Date = date) %>% 
+  mutate(num_cham = sprintf("%02d",num_cham),
+    Chamber = paste(light_treat, num_cham, "_", warm_treat, sep = ""))
+
+joined = left_join(growth, env, 
+                   by = c("Chamber", "Date", "light_treat", "num_cham", "warm_treat"))
+
+joined %>% 
+  slice_sample(n = 5000) %>% 
+  ggplot(aes(x = soil_temp_5cm, y = air_temp, color = WaterStress)) +
+    geom_point(alpha = 0.8) +
+    theme_bw()
+```
+
+
+
+```{r}
+growth %>% 
+  ggplot(aes(x = )) +
+  geom_scatter() +
+```
+
+
 

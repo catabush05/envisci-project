@@ -1,0 +1,460 @@
+---
+title: "Melillo et al. Exploratory Data Analysis"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(ggh4x)
+```
+
+```{r}
+env = read.csv("~/Downloads/envisci-project/Data/Melillo/hf199-01-hf-env.csv")
+plantID = read.csv("~/Downloads/envisci-project/Data/Melillo/hf199-02-hf-plant-ID.csv")
+growth = read.csv("~/Downloads/envisci-project/Data/Melillo/hf199-03-hf-growth.csv")
+```
+
+# Tidying data
+(descriptive variable names, coercing data types, etc)
+
+```{r}
+env = env %>% 
+  rename(c(light_treat = treatment, 
+           warm_treat = warming, 
+           air_temp = AT, 
+           ps_act_rad = Q, 
+           rel_humid = Rh, 
+           water_content = SM, 
+           soil_temp_5cm = ST)) %>% 
+  mutate(date = as.Date(paste(year, month, day, sep = "-")),
+        chamber = as.factor(chamber),
+        light_treat = as.factor(light_treat),
+        warm_treat = ordered(warm_treat, levels = c('C', 'A', '3', '5')))
+
+plantID = plantID %>% 
+  mutate(light_treat = as.factor(str_split_i(Chamber, "", -5)), 
+         num_cham = as.factor(
+           paste(str_split_i(Chamber, "", -4), 
+                 str_split_i(Chamber, "", -3), sep = "")),
+         warm_treat = ordered(as.factor(str_split_i(Chamber, "", -1)), 
+                              levels = c('C', 'A', '3', '5')),
+         Site = as.factor(Site),
+         Species = as.factor(Species),
+         Chamber = as.factor(Chamber),
+         GermDate = as.Date(GermDate),
+         SpringSeeder = as.Date(SpringSeeder),
+         CensInDate = as.Date(CensInDate),
+         DatePlanted = as.Date(DatePlanted),
+         DeathDate = as.Date(DeathDate),
+         CensorDate = as.Date(CensorDate),
+         MIA = as.Date(MIA)
+  )
+        
+
+growth = growth %>% 
+  mutate(Date = as.Date(Date),
+         Species = as.factor(Species),
+         Tag = sprintf(Tag, fmt = '%.1f'),
+         Chamber = as.factor(Chamber),
+         light_treat = as.factor(str_split_i(Chamber, "", -5)), 
+         num_cham = as.factor(
+           paste(str_split_i(Chamber, "", -4), 
+                 str_split_i(Chamber, "", -3), sep = "")),
+         warm_treat = ordered(as.factor(str_split_i(Chamber, "", -1)), 
+                              levels = c('C', 'A', '3', '5')),
+         SpringPhen = as.factor(SpringPhen),
+         FallPhen = as.factor(FallPhen), 
+         WaterStress = as.ordered(WaterStress))
+```
+
+
+# Exploratory Visualizations
+Let's make some fuckin CHARTS
+
+```{r}
+# Create custom labels for warming treatments
+warm_names = as_labeller(c("C" = "Control",
+                           "A" = "Ambient",
+                           "3" = "3°C",
+                           "5" = "5°C"))
+```
+
+
+### Height vs. Treatment
+```{r}
+# Avg height of each plant species per warmth treatment
+growth %>% 
+  group_by(Species, warm_treat) %>% 
+  summarize(meanHt = mean(Height, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanHt, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Tree Height Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Height (cm)") +
+    scale_y_continuous(breaks = c(0, 45, 90)) +
+    facet_wrap(vars(Species)) +
+    theme_bw()
+```
+
+### Lifespan vs. Treatment
+```{r}
+# Avg lifespan of each species per warming treatment
+plantID = plantID %>% 
+  mutate(Lifespan = DeathDate - DatePlanted)
+```
+
+```{r}
+plantID %>% 
+  mutate(Lifespan = as.numeric(Lifespan)) %>% 
+  group_by(Species) %>% 
+  mutate(count = sum(warm_treat == "C"), 
+            wg_mean = mean(Lifespan[warm_treat == "C"], na.rm = TRUE), 
+            wg_sd = sd(Lifespan[warm_treat == "C"], na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(diff_mean = (Lifespan - wg_mean) / wg_mean) %>% 
+  group_by(warm_treat) %>% 
+  summarize(meanLife = mean(diff_mean, na.rm = TRUE),
+            ster = sd(diff_mean, na.rm = TRUE)) %>% 
+  filter(warm_treat != "C") %>% 
+  ggplot(aes(x = warm_treat, y = meanLife, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    geom_errorbar(aes(ymin = meanLife - ster, ymax = meanLife + ster), 
+                  width = 0.2, orientation = "x") +
+    labs(title = "Average Tree Lifespan Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "% Change in Lifespan vs. Control") +
+    scale_fill_viridis_d(option = "inferno", direction = -1,
+                         begin = 0.5, end = 0.75) +
+    scale_x_discrete(labels = warm_names) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(family='', face='bold', size=15),
+      plot.subtitle = element_text(family='', color="#757575", size=13)
+    )
+```
+
+
+
+```{r}
+plantID %>% 
+  group_by(Species, warm_treat) %>% 
+  summarize(meanLife = mean(Lifespan, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanLife, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Tree Lifespan Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Lifespan (Days)") +
+    scale_y_continuous(breaks = c(0, 400, 800)) +
+    facet_wrap(vars(Species)) +
+    theme_bw()
+```
+
+### Diameter vs. Treatment
+```{r}
+growth %>% 
+  group_by(Species, warm_treat) %>% 
+  summarize(meanDiam = mean(Diameter, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanDiam, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Tree Diameter Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Diameter (cm)") +
+    scale_y_continuous(breaks = c(0, 4, 8)) +
+    facet_wrap(vars(Species)) +
+    theme_bw()
+```
+
+
+### Water Stress vs. Temp
+```{r}
+env = env %>% 
+  rename(num_cham = chamber, Date = date) %>% 
+  mutate(num_cham = sprintf("%02d",num_cham),
+    Chamber = paste(light_treat, num_cham, "_", warm_treat, sep = ""))
+
+joined = left_join(growth, env, 
+                   by = c("Chamber", "Date", "light_treat", "num_cham", "warm_treat"))
+
+joined %>% 
+  slice_sample(n = 5000) %>% 
+  ggplot(aes(x = soil_temp_5cm, y = air_temp, color = WaterStress)) +
+    geom_point(alpha = 0.8) +
+    theme_bw()
+```
+
+### Water Stress vs. Treatment
+
+
+```{r}
+# Create custom labels for average water stress
+joined %>% 
+  filter(warm_treat == "C") %>% 
+  summarize(avg_WS_C = mean(as.numeric(WaterStress), na.rm = TRUE))
+joined %>% 
+  filter(warm_treat == "A") %>% 
+  summarize(avg_WS_A = mean(as.numeric(WaterStress), na.rm = TRUE))
+joined %>% 
+  filter(warm_treat == "3") %>% 
+  summarize(avg_WS_3 = mean(as.numeric(WaterStress), na.rm = TRUE))
+joined %>% 
+  filter(warm_treat == "5") %>% 
+  summarize(avg_WS_5 = mean(as.numeric(WaterStress), na.rm = TRUE))
+
+avgWS_labs = data.frame(
+  label = c("Avg Water Stress Level = 2.78", 
+            "Avg Water Stress Level = 1.11", 
+            "Avg Water Stress Level = 1.17", 
+            "Avg Water Stress Level = 1.16"),
+  warm_treat = as.factor(c("C", "A", "3", "5"))
+)
+
+
+# Make the plot
+joined %>% 
+  filter(!is.na(WaterStress)) %>%
+  ggplot(aes(x = WaterStress, y = after_stat(prop), group = 1, 
+             fill = warm_treat)) +
+    geom_bar(show.legend = FALSE) +
+    labs(title = "Tree Water Stress Levels Under Different Warming Treatments",
+      subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+      x = "Water Stress (lvls 0-3)", y = "Proportion of Trees") +
+    facet_wrap(vars(warm_treat), labeller = warm_names) +
+    geom_text(data = avgWS_labs, 
+            mapping = aes(x = -Inf, y = Inf, label = label),
+            hjust   = -0.4,
+            vjust   = 2.5) +
+    scale_fill_viridis_d(option = "inferno", direction = -1,
+                           begin = 0.5, end = 0.9) +
+    theme_bw() +
+    theme(
+        plot.title = element_text(family='', face='bold', size=14),
+        plot.subtitle = element_text(family='', color="#757575", size=12),
+        strip.background = element_rect(fill = "white")
+      )
+```
+
+```{r}
+joined %>% 
+  filter(!is.na(WaterStress)) %>% 
+  filter(WaterStress != 0) %>% 
+  ggplot(aes(x = WaterStress, y = after_stat(prop), group = 1)) +
+  labs(title = "Tree Water Stress Levels Under Different Warming Treatments (Omitting 0)",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Water Stress (lvls 1-3)",
+         y = "Number of Trees") +
+  geom_bar(show.legend = FALSE) +
+  facet_wrap(vars(warm_treat), labeller = warm_names) +
+  theme_bw()
+```
+
+
+## New DF yay~
+
+
+```{r}
+joined = joined %>% 
+  mutate(Chamber = as.factor(Chamber),
+         Tag = as.numeric(Tag))
+
+megajoin = left_join(joined, plantID, 
+                     by = c("Species", "Tag", "Chamber", "light_treat", "warm_treat", "num_cham"))
+```
+
+
+```{r}
+megajoin = megajoin %>% 
+  group_by(Tag) %>% 
+  mutate(maxDiam = max(Diameter, na.rm = TRUE),
+         maxHgt = max(Height, na.rm = TRUE)) %>% 
+  mutate(maxDiam = case_when(maxDiam == -Inf ~ NA,
+                             maxDiam != -Inf ~ maxDiam),
+         maxHgt = case_when(maxHgt == -Inf ~ NA,
+                            maxHgt != -Inf ~ maxHgt))
+```
+
+## Max Height vs. Warming Treatment
+
+```{r}
+# Avg max height per warmth treatment (all species)
+megajoin %>% 
+  group_by(Species) %>% 
+  mutate(count = sum(warm_treat == "C"), 
+            wg_mean = mean(maxHgt[warm_treat == "C"], na.rm = TRUE), 
+            wg_sd = sd(maxHgt[warm_treat == "C"], na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(diff_mean = (maxHgt - wg_mean) / wg_mean) %>% 
+  group_by(warm_treat) %>% 
+  summarize(meanHt = mean(diff_mean, na.rm = TRUE),
+            ster = sd(diff_mean, na.rm = TRUE)) %>% 
+  filter(warm_treat != "C")  %>% 
+  ggplot(aes(x = warm_treat, y = meanHt, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    geom_errorbar(aes(ymin = meanHt - ster, 
+                      ymax = meanHt + ster), color = "black", width = 0.2) +
+    labs(title = "Average Tree Height Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "% change in Height vs. Control") +
+    scale_fill_viridis_d(option = "inferno", direction = -1,
+                         begin = 0.5, end = 0.75) +
+    scale_x_discrete(labels = warm_names) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(family='', face='bold', size=15),
+      plot.subtitle = element_text(family='', color="#757575", size=13)
+    )
+```
+
+
+```{r}
+# Avg max height of each plant species per warmth treatment
+megajoin %>% 
+  group_by(Species, warm_treat) %>% 
+  summarize(meanHt = mean(maxHgt, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanHt, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Tree Height Under Different Warming Treatments (By Species)",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Height (cm)") +
+    scale_y_continuous(breaks = c(0, 100, 200)) +
+    facet_wrap(vars(Species)) +
+    theme_bw()
+```
+
+## Max Diameter vs. Warming Treatment
+```{r}
+# Avg max diameter per warmth treatment (all species)
+megajoin %>% 
+  group_by(Species) %>% 
+  mutate(count = sum(warm_treat == "C"), 
+            wg_mean = mean(maxDiam[warm_treat == "C"], na.rm = TRUE), 
+            wg_sd = sd(maxDiam[warm_treat == "C"], na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(diff_mean = (maxDiam - wg_mean) / wg_mean) %>% 
+  group_by(warm_treat) %>% 
+  summarize(meanDiam = mean(diff_mean, na.rm = TRUE),
+            ster = sd(diff_mean, na.rm = TRUE)) %>% 
+  filter(warm_treat != "C")  %>% 
+  ggplot(aes(x = warm_treat, y = meanDiam, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    geom_errorbar(aes(ymin = meanDiam - ster, ymax = meanDiam + ster), 
+                  color = "black", width = 0.2) +
+    labs(title = "Average Tree Diameter Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "% change in Diameter vs. Control") +
+    scale_fill_viridis_d(option = "inferno", direction = -1,
+                         begin = 0.5, end = 0.75) +
+    scale_x_discrete(labels = warm_names) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(family='', face='bold', size=15),
+      plot.subtitle = element_text(family='', color="#757575", size=13)
+    )
+```
+
+
+```{r}
+# Avg max diameter of each plant species per warmth treatment
+megajoin %>% 
+  group_by(Species, warm_treat) %>% 
+  summarize(meanDiam = mean(maxDiam, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanDiam, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Tree Diameter Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Diameter (cm)") +
+    scale_y_continuous(breaks = c(0, 5, 10)) +
+    facet_wrap(vars(Species)) +
+    theme_bw()
+```
+
+## Beech-Specific
+
+```{r}
+# Water Stress
+joined %>% 
+  filter(!is.na(WaterStress)) %>%
+  filter(Species == "fagr") %>% 
+  ggplot(aes(x = WaterStress, 
+             y = after_stat(prop), group = 1)) +
+  labs(title = "Beech Water Stress Levels Under Different Warming Treatments (Omitting 0)",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Water Stress (lvls 1-3)",
+         y = "Number of Trees") +
+  geom_bar(show.legend = FALSE) +
+  facet_wrap(vars(warm_treat), labeller = warm_names) +
+  theme_bw()
+```
+
+```{r}
+# Max height
+megajoin %>% 
+  filter(Species == "fagr") %>% 
+  group_by(warm_treat) %>% 
+  summarize(meanHt = mean(maxHgt, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanHt, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Beech Height Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Height (cm)") +
+    theme_bw()
+```
+
+```{r}
+# Max diameter
+megajoin %>% 
+  filter(Species == "fagr") %>% 
+  group_by(warm_treat) %>% 
+  summarize(meanDiam = mean(maxDiam, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanDiam, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Beech Diameter Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Diameter (cm)") +
+    theme_bw()
+```
+
+```{r}
+plantID %>% 
+  filter(Species == "fagr") %>% 
+  group_by(warm_treat) %>% 
+  summarize(meanLife = mean(Lifespan, na.rm = TRUE)) %>% 
+  ggplot(aes(x = warm_treat, y = meanLife, fill = warm_treat)) + 
+    geom_col(show.legend = FALSE) +
+    labs(title = "Average Beech Lifespan Under Different Warming Treatments",
+         subtitle = "Controlled experiment on native species in Harvard Forest from 2009-2013",
+         x = "Warming Treatment",
+         y = "Mean Lifespan (Days)") +
+    theme_bw()
+```
+
+
+
+# Manova
+
+
+```{r}
+no_na_megajoin  = megajoin %>% 
+  drop_na(warm_treat, light_treat, maxHgt, maxDiam, Lifespan)
+  
+
+man = manova(c(maxHgt, maxDiam, Lifespan) ~ warm_treat + light_treat, 
+             data = no_na_megajoin)
+```
+
+
+
+
+
+
+
+

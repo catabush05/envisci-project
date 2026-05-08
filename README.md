@@ -1,7 +1,7 @@
 # Rising Temperatures and Native Tree Resilience in New England
 Contributors: Pen Hanks, Maddie Strate, Catalina Bush
 
-**Author contributions statement**
+**Author contributions statement**:
 The work was split between all three of us and we communicated effectively throughout the project to manage workdloads and distrubute responsibilities. Here are the core areas where each group member focused, keeping in mind that each group member did work beyond what is listed below:
 
 *Catalina Bush* - Code, model, and analysis for Record et al. dataset, Record et al. slides in SSRD presentation, and executive summary and problem overview in whitepaper.

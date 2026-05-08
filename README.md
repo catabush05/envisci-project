@@ -8,7 +8,7 @@ The work was split between all three of us and we communicated effectively throu
 
 *Pen Hanks* - Exploratory and background research, problem overview and recommendation slides in SSRD presentation, and background and recommendations in whitepaper.
 
-*Maddie Strate* - Code and analysis for Meillo et al. dataset, Melillo et al. slides in SSRD presentation, and solution summary and conclusion in whitepaper. 
+*Maddie Strate* - Code and analysis for Melillo et al. dataset, Melillo et al. slides in SSRD presentation, and solution summary and conclusion in whitepaper. 
 
 
 ## Abstract
@@ -17,5 +17,5 @@ New England has some of the fastest rising temperatures in the world, and native
 **[Link to working doc](https://docs.google.com/document/d/1HPyhOY6H4XNVYDQWtP7dnryCGXT4inpNgN0Ev869b8k/edit?usp=sharing)**
 
 ## Structure of repository
-The repository is fairly straightforward. You can find the code used to generate models and visualizations in the Code folder, while the result of those plots can be found in the Visualizations folder. The source data used for this project is in the Data folder, and a zip file is conveniently provided in that same folder. The Writing folder contains the SSRD presentation for this project, the previous README assignment, and the final whitepaper.
+The repository is fairly straightforward. You can find the code used to generate models and visualizations in the Code folder, while the result of those plots can be found in the Visualizations folder. The source data used for this project is in the Data folder, and a zip file is conveniently provided in that same folder. The Writing folder contains the SSRD presentation for this project, the previous README assignment, the response to reviewers, and the final whitepaper.
 
